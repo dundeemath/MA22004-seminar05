@@ -1,0 +1,306 @@
+---
+title: "Seminar 05"
+subtitle: "MA22004"
+date: "2024-10-16"
+author: "Dr Eric Hall   •   ehall001@dundee.ac.uk"
+format: 
+  revealjs:
+    chalkboard: true
+    html-math-method: katex
+    theme: [default, resources/custom.scss]
+    css: resources/fonts.css
+    logo: resources/logo.png
+    footer: ""
+    template-partials:
+      - resources/title-slide.html
+    transition: slide
+    background-transition: fade
+from: markdown+emoji
+lang: en
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(echo = FALSE, comment = "", fig.asp = .5)
+library(tidyverse)
+library(latex2exp)
+library(knitr)
+library(kableExtra)
+library(janitor)
+library(fontawesome)
+library(latex2exp)
+```
+
+# Announcements {.mySegue .center}
+:::{.hidden}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\E}{\mathbf{E}}
+\DeclareMathOperator{\Cov}{Cov}
+\DeclareMathOperator{\corr}{corr}
+\newcommand{\se}{\mathsf{se}}
+\DeclareMathOperator{\sd}{sd}
+:::
+
+## Attendance
+
+::: {layout="[[-1], [1], [-1]]"}
+![](images/seats.png){fig-align="center" fig-alt="Register your attendance using SEAtS"}
+:::
+
+## Reminders 
+
+- Discuss critical components of statistical studies at Thu workshop. 
+- Discuss worksheet 4 at Fri workshop.
+- Lab 3 due **Fri 2024-10-18** at **17:00**. 
+
+
+## Outline of today &nbsp;&nbsp;`r fa("compass")`
+
+1. Estimating variances
+
+2. UN & Africa `r fa("lightbulb")`
+
+3. Comparing means (two sample inferences)
+
+
+# Estimating variances {.mySegue .center}
+
+## Recall: $\chi^2$ critical values
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+df <- 10
+L <- 30
+x1 <- qchisq(1-0.05/2, df=df, lower.tail = FALSE)
+x2 <- qchisq(0.05/2, df=df, lower.tail = FALSE)
+ggplot(NULL, aes(c(0,L))) + 
+  geom_line(stat = "function", fun = dchisq, args = list(df = df), xlim = c(0, L), linewidth = 1) +
+  geom_area(stat = "function", fun = dchisq, args = list(df = df), fill = "blue", xlim = c(0, x1), alpha = 0.3) + 
+        geom_area(stat = "function", fun = dchisq, args = list(df = df), fill = "blue", xlim = c(x2, L), alpha = 0.3) +
+        annotate("text", x = 10, y = .025, label=TeX("Each shaded area $=\\alpha$"), color = "blue", size = 8) + 
+        annotate("segment", x = 10, xend = x1-1, y = 0.015, yend = .002, color = "blue", arrow=arrow(length=unit(0.2,"cm")), size = 2) + 
+        annotate("segment", x = 10, xend = x2+1, y = 0.015, yend = .002, color = "blue", arrow=arrow(length=unit(0.2,"cm")), size = 2) + 
+        annotate("text", x = x1, y = -0.01, label=TeX("$\\chi^2_{1-\\alpha, \\nu}$"), linewidth = 2, size = 8) + 
+        annotate("text", x = x2, y = -0.01, label=TeX("$\\chi^2_{\\alpha, \\nu}$"), linewidth = 2, size = 8) + 
+        geom_segment(aes(x = x1, xend = x1, y = 0, yend = dchisq(x1, df = df)), linetype = 44) + 
+        geom_segment(aes(x = x2, xend = x2, y = 0, yend = dchisq(x2, df = df)), linetype = 44) + ylim(-0.015, 0.1) + 
+        theme(axis.title.y = element_blank(), axis.ticks.y=element_blank(), axis.text.y=element_blank(), axis.title.x = element_blank(), axis.ticks.x=element_blank(), axis.text.x=element_blank(), text = element_text(size = 20))
+```
+
+Right or positively skewed (long tail is on the right / $\to +\infty$). 
+
+## Estimating $\sigma^2$ (normal populations)
+
+Consider iid $X_1, \dots, X_m \sim \mathsf{N}(\mu, \sigma^2).$
+
+For a sample of size $m,$ the *sample variance* $s^2$ is 
+$$s^2 = \frac{1}{m-1} \sum_{i=1}^m (x_i - \bar{x})^2\,,$$
+where $\bar{x}$ is the sample mean.
+
+$s^2$ is an estimator for $\sigma^2.$
+
+
+## $100(1-\alpha)\%$ CI for $\sigma^2$ 
+
+$$\left( (m-1)\frac{s^2}{\chi^2_{\alpha/2, m-1}} \,,\quad (m-1)\frac{s^2}{\chi^2_{1-\alpha/2, m-1}} \right)$$
+
+</br>
+
+:::{.callout-warning}
+## One of these things is not like the others...
+
+How does this differ from other confidence intervals we have seen?
+:::
+
+## H-tests about $\sigma^2$ 
+
+Rely on test statistic:
+
+$$V = \frac{(m-1)S^2}{\sigma^2} = \frac{\sum_i (X_i - \bar{X})^2}{\sigma^2}  \sim \chi^2(m-1)$$
+
+</br>
+
+:::{.callout-warning}
+## One of these things is not like the others...
+
+How does this test statistic differ from others we have seen?
+:::
+
+
+# UN & Africa `r fa("earth-africa")` {.mySegue .center}
+
+
+## `r fa("lightbulb")` The task 
+
+:::: {.columns}
+::: {.column width="60%"}
+
+**Do NOT work in pairs/groups**
+
+We need as many samples as we can get!
+
+1. Read the form.
+2. Answer the two questions independently.
+3. Fold and return to instructor.
+:::
+
+::: {.column width="40%"}
+
+![](images/UN_emblem_blue.svg){width=100% fig.alt="Emblem of the United Nations."}
+:::
+::::
+
+## An aside about types of studies {.mySegue .center}
+
+## `r fa("binoculars")` Observational study 
+
+In an observational study, the sample population is measured, or surveyed, as it is.  The researcher observes the subjects and measures variables, but does not influence the population in any way (there is no manipulation by the researcher). 
+
+### `r fa("table-list")` Surveys 
+
+A survey can be used as part of an observational study. Surveys can be conducted by questionnaries or interviews. 
+
+## `r fa("flask")` Experiment  {.smaller}
+
+An experimental study is conducted to determine what effect a particular treatment has on the outcome. Researchers 
+
+- take measurements or surveys of the sample population,
+- then manipulate the sample population in some manner, 
+- then re-measure, or re-survey, using the same procedures 
+
+to determine if the manipulation possibly changed the measurements.
+
+### `r fa("dice")` Randomized controlled trials 
+
+Specially designed experimental studies allow researchers to claim **causation** (cause-and-effect). 
+
+## Was the preceeding task an example of a: {.center}
+
+
+`r fa("a")` &nbsp;&nbsp; survey ?
+
+
+`r fa("b")` &nbsp;&nbsp; experiment ?
+
+
+`r fa("c")` &nbsp;&nbsp; observational study ?
+
+
+## Anchoring Heuristic
+
+A type of **bias**, where estimate of an unknown quantity is influenced by a previously supplied starting point.
+
+:::{.callout-warning}
+The value of $X$ should not effect the outcome (after all, you were told it was randomly generated), yet it seems to... 
+:::
+
+## UN & Africa `r fa("earth-africa")` $\to$ Experiment `r fa("flask")` 
+
+- **units** are students
+- **treatment** is hand written numbers $X$ either 10 or 65
+- **outcome of interest** is response to second question
+
+:::{.callout-tip}
+## What can we do with this experimental data?
+
+We can compare the mean across groups!
+:::
+
+# Comparing means (unpaired) {.mySegue .center}
+
+
+## CI for *difference* of means
+
+General interval estimate:
+$$\text{point estimate} \pm \text{margin of error}$$
+
+:::{.callout-tip}
+## Recall...
+
+How do we compute the margin of error if the populations are normal (with unknown variance) but the sample size is small?
+:::
+
+## CI: unpaired $\mathsf{t}$
+
+For the parameter of interest $\mu_{D} = \mu_{X} - \mu_{Y}$, we consider the CI:
+
+$$(\bar{x} - \bar{y}) \pm t_{\alpha/2, \nu} \cdot \widehat{\sigma}_{(\bar{x} - \bar{y})}$$
+</br>
+
+:::{.callout-important}
+## What should ... 
+
+- the standard error be?  
+- the dof be?
+:::
+
+::: {.notes}
+- standard error: $\sqrt{\frac{s_x^2}{m} + \frac{s_y^2}{n}}$
+- note even though we are looking for difference, the variances add!
+:::
+
+## Tricky parts... pooled estimators
+
+If the population variances are (assumed) the same then replace standarded error with
+
+$$\sqrt{s_p^2 \left(\frac{1}{m} + \frac{1}{n}\right)}\,,$$
+
+which uses the **pooled estimator** for single parameter $\sigma^2$:
+$$S_p^2 = \frac{m-1}{m+n-2} S_X^2 + \frac{n-1}{m+n-2}S_Y^2\,.$$
+
+
+## Tricky parts... Welch's formula 
+
+::::{.columns}
+::: {.column width="60%"}
+Dof is given by (rounded down to the nearest integer)
+$$\begin{align*}
+\nu &= \frac{ \left( \frac{s_X^2}{m} + \frac{s_Y^2}{n} \right)^2}{\frac{(s_X^2 / m)^2}{m-1} + \frac{(s_Y^2/n)^2}{n-1}} \\ 
+ &= \frac{ \left( s_{\bar{X}}^2 + s_{\bar{Y}}^2 \right)^2}{\frac{s_{\bar{X}}^4}{m-1} + \frac{s_{\bar{Y}}^4}{n-1}}
+ \end{align*}$$
+:::
+
+:::{.column width="40%"}
+![](images/The_Scream_Pastel.jpg){width=85% .right alt="The Scream by Edvard Munch."}
+:::
+::::
+
+## Approximate Welch's formula 
+
+It is complicated to compute true degrees of freedom (dof) $\nu$!
+
+Since we are short on time today ... 
+
+</br>
+
+:::{.callout-tip}
+## A conservative estimate for the dof is 
+
+$$\nu = \min(m-1, n-1)\,.$$
+:::
+
+## Back to UN & Africa `r fa("earth-africa")` 
+
+Do the data collected suggest that there is a difference between the treatment groups?
+
+</br>
+
+:::{.callout-warning}
+Typically, the answer is yes, but we might struggle to see a difference due to the small class size this year.
+:::
+
+
+# Summary
+
+Today discussed (1) point estimates, CI, and hypothesis tests for population variances and (2) two-sample inferences for means (unpaired samples).
+
+![](images/Flag_of_the_United_Nations.svg){width=60% fig.alt="Emblem of the United Nations."}
+
+
+:::{.callout-tip}
+## Today's materials 
+
+Slides posted to <https://dundeemath.github.io/MA22004-seminar05>.
+:::
