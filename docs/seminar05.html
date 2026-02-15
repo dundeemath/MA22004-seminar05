@@ -8,10 +8,10 @@
 <link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.4.554">
+  <meta name="generator" content="quarto-1.5.43">
 
-  <meta name="author" content="Dr Eric Hall • ehall001@dundee.ac.uk">
-  <meta name="dcterms.date" content="2024-10-16">
+  <meta name="author" content="Dr John McDermott • jzmcdermott@dundee.ac.uk">
+  <meta name="dcterms.date" content="2026-02-16">
   <title>Seminar 05</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -33,7 +33,7 @@
   </style>
   <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto.css">
   <link rel="stylesheet" href="resources/fonts.css">
-  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
  var mathElements = document.getElementsByClassName("math");
  var macros = [];
@@ -48,7 +48,7 @@
    });
 }}});
   </script>
-  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css">
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
   <link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -349,10 +349,10 @@
   <img class="logo" src="resources/rev_logo.png" alt="University of Dundee Logo">
   <br>
   <h1 class="title">Seminar 05</h1>
-  <p class="subtitle">MA22004</p>
+  <p class="subtitle">MA22004/MA52008</p>
   <br>
-  <p class="author">Dr Eric Hall • ehall001@dundee.ac.uk</p>
-  <p class="date">2024-10-16</p>
+  <p class="author">Dr John McDermott • jzmcdermott@dundee.ac.uk</p>
+  <p class="date">2026-02-16</p>
 </section>
 <section>
 <section id="announcements" class="title-slide slide level1 mySegue center">
@@ -363,6 +363,9 @@
 </section>
 <section id="attendance" class="slide level2">
 <h2>Attendance</h2>
+<div>
+
+</div>
 <div class="quarto-layout-panel" data-layout="[[-1], [1], [-1]]">
 <div class="quarto-layout-row">
 <div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
@@ -383,9 +386,9 @@
 <section id="reminders" class="slide level2">
 <h2>Reminders</h2>
 <ul>
-<li>Discuss critical components of statistical studies at Thu workshop.</li>
-<li>Discuss worksheet 4 at Fri workshop.</li>
-<li>Lab 3 due <strong>Fri 2024-10-18</strong> at <strong>17:00</strong>.</li>
+<li>Discuss critical components of statistical studies at Wed workshop.</li>
+<li>Discuss worksheet 4 at Thu workshop.</li>
+<li>Lab 3 due <strong>Fri 2026-02-20</strong> at <strong>17:00</strong>.</li>
 </ul>
 </section>
 <section id="outline-of-today" class="slide level2">
@@ -404,7 +407,7 @@
 <section id="recall-chi2-critical-values" class="slide level2">
 <h2>Recall: <span class="math inline">\chi^2</span> critical values</h2>
 
-<img data-src="seminar05_files/figure-revealjs/unnamed-chunk-2-1.png" width="960" class="r-stretch"><p>Right or positively skewed (long tail is on the right / <span class="math inline">\to +\infty</span>).</p>
+<img data-src="seminar05_files/figure-revealjs/unnamed-chunk-2-1.png" width="960" class="r-stretch"><p>Right or positively skewed (long tail is on the right, <span class="math inline">\to +\infty</span>).</p>
 </section>
 <section id="estimating-sigma2-normal-populations" class="slide level2">
 <h2>Estimating <span class="math inline">\sigma^2</span> (normal populations)</h2>
@@ -940,18 +943,7 @@
         }
         return false;
       }
-      const clipboard = new window.ClipboardJS('.code-copy-button', {
-        text: function(trigger) {
-          const codeEl = trigger.previousElementSibling.cloneNode(true);
-          for (const childEl of codeEl.children) {
-            if (isCodeAnnotation(childEl)) {
-              childEl.remove();
-            }
-          }
-          return codeEl.innerText;
-        }
-      });
-      clipboard.on('success', function(e) {
+      const onCopySuccess = function(e) {
         // button target
         const button = e.trigger;
         // don't keep focus
@@ -983,7 +975,29 @@
         }, 1000);
         // clear code selection
         e.clearSelection();
+      }
+      const getTextToCopy = function(trigger) {
+          const codeEl = trigger.previousElementSibling.cloneNode(true);
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+      }
+      const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+        text: getTextToCopy
       });
+      clipboard.on('success', onCopySuccess);
+      if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+        // For code content inside modals, clipBoardJS needs to be initialized with a container option
+        // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+        const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+          text: getTextToCopy,
+          container: window.document.getElementById('quarto-embedded-source-code-modal')
+        });
+        clipboardModal.on('success', onCopySuccess);
+      }
         var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
         var mailtoRegex = new RegExp(/^mailto:/);
           var filterRegex = new RegExp('/' + window.location.host + '/');
@@ -991,7 +1005,7 @@
             return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
         }
         // Inspect non-navigation links and adorn them if external
-     	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+     	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
         for (var i=0; i<links.length; i++) {
           const link = links[i];
           if (!isInternal(link.href)) {

@@ -1,8 +1,8 @@
 ---
 title: "Seminar 05"
-subtitle: "MA22004"
-date: "2024-10-16"
-author: "Dr Eric Hall   •   ehall001@dundee.ac.uk"
+subtitle: "MA22004/MA52008"
+date: "2026-02-16"
+author: "Dr John McDermott   •   jzmcdermott@dundee.ac.uk"
 format: 
   revealjs:
     chalkboard: true
@@ -49,9 +49,9 @@ library(latex2exp)
 
 ## Reminders 
 
-- Discuss critical components of statistical studies at Thu workshop. 
-- Discuss worksheet 4 at Fri workshop.
-- Lab 3 due **Fri 2024-10-18** at **17:00**. 
+- Discuss critical components of statistical studies at Wed workshop. 
+- Discuss worksheet 4 at Thu workshop.
+- Lab 3 due **Fri 2026-02-20** at **17:00**. 
 
 
 ## Outline of today &nbsp;&nbsp;`r fa("compass")`
@@ -89,7 +89,7 @@ ggplot(NULL, aes(c(0,L))) +
         theme(axis.title.y = element_blank(), axis.ticks.y=element_blank(), axis.text.y=element_blank(), axis.title.x = element_blank(), axis.ticks.x=element_blank(), axis.text.x=element_blank(), text = element_text(size = 20))
 ```
 
-Right or positively skewed (long tail is on the right / $\to +\infty$). 
+Right or positively skewed (long tail is on the right, $\to +\infty$). 
 
 ## Estimating $\sigma^2$ (normal populations)
 
